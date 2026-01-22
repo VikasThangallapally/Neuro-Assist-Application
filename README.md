@@ -34,9 +34,7 @@ start_server.bat
 python fastapi_app.py
 ```
 
-### Access the Application
-- **🏠 Landing Page**: http://localhost:8010 (3D animations with sliding colors)
-- **🎯 Gradio Interface**: Click "Start Using Neuro ASSIST" button or visit http://localhost:8010/frontend/neuro_assist.html
+
 
 ## 📁 Project Structure
 
