@@ -1,0 +1,588 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Admin — Session Browser</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body { 
+        font-family: Arial, Helvetica, sans-serif; 
+        margin: 16px; 
+        background:#f4f6f8;
+        position: relative;
+        overflow-x: hidden;
+        perspective: 1000px;
+      }
+
+      /* Medical Background Animations */
+      .medical-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+        pointer-events: none;
+        transform-style: preserve-3d;
+      }
+
+      .dna-strand {
+        position: absolute;
+        width: 2px;
+        height: 200px;
+        background: linear-gradient(to bottom, rgba(76, 175, 80, 0.1), rgba(46, 125, 50, 0.3), rgba(76, 175, 80, 0.1));
+        animation: dnaFloat 8s ease-in-out infinite;
+      }
+
+      .dna-strand:nth-child(1) { left: 10%; animation-delay: 0s; }
+      .dna-strand:nth-child(2) { left: 20%; animation-delay: 1s; height: 150px; }
+      .dna-strand:nth-child(3) { left: 30%; animation-delay: 2s; height: 180px; }
+      .dna-strand:nth-child(4) { left: 40%; animation-delay: 3s; height: 120px; }
+      .dna-strand:nth-child(5) { left: 50%; animation-delay: 4s; height: 160px; }
+      .dna-strand:nth-child(6) { left: 60%; animation-delay: 5s; height: 140px; }
+      .dna-strand:nth-child(7) { left: 70%; animation-delay: 6s; height: 170px; }
+      .dna-strand:nth-child(8) { left: 80%; animation-delay: 7s; height: 130px; }
+      .dna-strand:nth-child(9) { left: 90%; animation-delay: 8s; height: 190px; }
+
+      @keyframes dnaFloat {
+        0%, 100% { transform: translateY(0px) rotate(0deg) rotateX(0deg) rotateY(0deg); opacity: 0.3; }
+        25% { transform: translateY(-20px) rotate(5deg) rotateX(10deg) rotateY(5deg); opacity: 0.6; }
+        50% { transform: translateY(-40px) rotate(0deg) rotateX(0deg) rotateY(0deg); opacity: 0.8; }
+        75% { transform: translateY(-20px) rotate(-5deg) rotateX(-10deg) rotateY(-5deg); opacity: 0.6; }
+      }
+
+      .cell {
+        position: absolute;
+        width: 40px;
+        height: 40px;
+        border: 2px solid rgba(76, 175, 80, 0.2);
+        border-radius: 50%;
+        animation: cellPulse 6s ease-in-out infinite;
+      }
+
+      .cell:nth-child(10) { top: 20%; left: 15%; animation-delay: 0s; }
+      .cell:nth-child(11) { top: 40%; left: 85%; animation-delay: 2s; }
+      .cell:nth-child(12) { top: 60%; left: 25%; animation-delay: 4s; }
+      .cell:nth-child(13) { top: 80%; left: 75%; animation-delay: 6s; }
+      .cell:nth-child(14) { top: 30%; left: 65%; animation-delay: 8s; }
+
+      @keyframes cellPulse {
+        0%, 100% { transform: scale(1) rotateX(0deg) rotateY(0deg); opacity: 0.2; }
+        50% { transform: scale(1.2) rotateX(180deg) rotateY(180deg); opacity: 0.4; }
+      }
+
+      .neuron {
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        background: rgba(76, 175, 80, 0.3);
+        border-radius: 50%;
+        animation: neuronSpark 4s ease-in-out infinite;
+      }
+
+      .neuron::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 60px;
+        height: 2px;
+        background: linear-gradient(to right, rgba(76, 175, 80, 0.3), transparent);
+        transform: translate(-50%, -50%);
+      }
+
+      .neuron:nth-child(15) { top: 25%; left: 35%; animation-delay: 0s; }
+      .neuron:nth-child(16) { top: 55%; left: 55%; animation-delay: 1.5s; }
+      .neuron:nth-child(17) { top: 75%; left: 45%; animation-delay: 3s; }
+
+      @keyframes neuronSpark {
+        0%, 100% { opacity: 0.3; transform: scale(1) rotateX(0deg) rotateY(0deg); }
+        50% { opacity: 0.8; transform: scale(1.3) rotateX(180deg) rotateY(180deg); }
+      }
+
+      .medical-icon {
+        position: absolute;
+        font-size: 24px;
+        color: rgba(76, 175, 80, 0.2);
+        animation: iconFloat 10s ease-in-out infinite;
+      }
+
+      .medical-icon:nth-child(18) { top: 15%; left: 5%; content: '🧠'; }
+      .medical-icon:nth-child(19) { top: 35%; left: 95%; content: '🔬'; }
+      .medical-icon:nth-child(20) { top: 65%; left: 8%; content: '⚕️'; }
+      .medical-icon:nth-child(21) { top: 85%; left: 92%; content: '🩺'; }
+
+      @keyframes iconFloat {
+        0%, 100% { transform: translateY(0px) rotate(0deg) rotateX(0deg) rotateY(0deg); }
+        33% { transform: translateY(-10px) rotate(120deg) rotateX(120deg) rotateY(120deg); }
+        66% { transform: translateY(10px) rotate(240deg) rotateX(240deg) rotateY(240deg); }
+      }
+
+      .brain-3d {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 100px;
+        height: 80px;
+        background: radial-gradient(ellipse at center, rgba(76, 175, 80, 0.1) 0%, transparent 70%);
+        border-radius: 50% 50% 40% 40%;
+        transform: translate(-50%, -50%);
+        animation: brainRotate 15s linear infinite;
+        transform-style: preserve-3d;
+      }
+
+      .brain-3d::before {
+        content: '';
+        position: absolute;
+        top: 20%;
+        left: 20%;
+        width: 60px;
+        height: 40px;
+        background: radial-gradient(ellipse at center, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: brainPulse 3s ease-in-out infinite;
+      }
+
+      @keyframes brainRotate {
+        0% { transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+        100% { transform: translate(-50%, -50%) rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+      }
+
+      @keyframes brainPulse {
+        0%, 100% { transform: scale(1); opacity: 0.2; }
+        50% { transform: scale(1.1); opacity: 0.4; }
+      }
+
+      .dna-helix {
+        position: absolute;
+        top: 70%;
+        left: 10%;
+        width: 4px;
+        height: 100px;
+        background: linear-gradient(to bottom, rgba(76, 175, 80, 0.3), rgba(46, 125, 50, 0.5), rgba(76, 175, 80, 0.3));
+        transform-origin: center;
+        animation: helixTwist 12s ease-in-out infinite;
+      }
+
+      .dna-helix::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -10px;
+        width: 24px;
+        height: 100px;
+        background: repeating-linear-gradient(
+          to bottom,
+          transparent 0px,
+          transparent 10px,
+          rgba(76, 175, 80, 0.2) 10px,
+          rgba(76, 175, 80, 0.2) 20px
+        );
+        animation: helixTwist 12s ease-in-out infinite reverse;
+      }
+
+      @keyframes helixTwist {
+        0% { transform: rotateX(0deg) rotateY(0deg); }
+        50% { transform: rotateX(180deg) rotateY(180deg); }
+        100% { transform: rotateX(360deg) rotateY(360deg); }
+      }
+
+      /* New 3D Medical Capture Animations */
+      .mri-slice {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background: radial-gradient(circle, rgba(76, 175, 80, 0.1) 0%, rgba(46, 125, 50, 0.2) 50%, transparent 100%);
+        border: 1px solid rgba(76, 175, 80, 0.3);
+        border-radius: 50%;
+        animation: mriRotate 8s linear infinite;
+        transform-style: preserve-3d;
+      }
+
+      .mri-slice::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 30px;
+        height: 30px;
+        background: radial-gradient(circle, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        animation: mriPulse 4s ease-in-out infinite;
+      }
+
+      .mri-slice:nth-child(22) { top: 10%; left: 20%; animation-delay: 0s; }
+      .mri-slice:nth-child(23) { top: 30%; left: 80%; animation-delay: 2s; }
+      .mri-slice:nth-child(24) { top: 50%; left: 15%; animation-delay: 4s; }
+      .mri-slice:nth-child(25) { top: 70%; left: 85%; animation-delay: 6s; }
+
+      @keyframes mriRotate {
+        0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); }
+        25% { transform: rotateX(90deg) rotateY(90deg) rotateZ(90deg) scale(1.1); }
+        50% { transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg) scale(1); }
+        75% { transform: rotateX(270deg) rotateY(270deg) rotateZ(270deg) scale(1.1); }
+        100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg) scale(1); }
+      }
+
+      @keyframes mriPulse {
+        0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+        50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.2); }
+      }
+
+      .ct-scan {
+        position: absolute;
+        width: 50px;
+        height: 50px;
+        background: conic-gradient(from 0deg, rgba(76, 175, 80, 0.1) 0deg, rgba(46, 125, 50, 0.3) 90deg, rgba(76, 175, 80, 0.1) 180deg, transparent 270deg);
+        border-radius: 50%;
+        animation: ctSpin 6s linear infinite;
+        transform-style: preserve-3d;
+      }
+
+      .ct-scan::after {
+        content: '';
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        width: 30px;
+        height: 30px;
+        background: radial-gradient(circle, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: ctInnerRotate 3s linear infinite reverse;
+      }
+
+      .ct-scan:nth-child(26) { top: 20%; left: 70%; animation-delay: 0s; }
+      .ct-scan:nth-child(27) { top: 60%; left: 30%; animation-delay: 1.5s; }
+      .ct-scan:nth-child(28) { top: 40%; left: 50%; animation-delay: 3s; }
+
+      @keyframes ctSpin {
+        0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+        100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+      }
+
+      @keyframes ctInnerRotate {
+        0% { transform: rotate(0deg) scale(1); }
+        50% { transform: rotate(180deg) scale(1.1); }
+        100% { transform: rotate(360deg) scale(1); }
+      }
+
+      .brain-scan {
+        position: absolute;
+        width: 80px;
+        height: 60px;
+        background: linear-gradient(45deg, rgba(76, 175, 80, 0.1) 0%, rgba(46, 125, 50, 0.2) 50%, rgba(76, 175, 80, 0.1) 100%);
+        border-radius: 50% 50% 40% 40%;
+        animation: brainScanFloat 10s ease-in-out infinite;
+        transform-style: preserve-3d;
+      }
+
+      .brain-scan::before {
+        content: '';
+        position: absolute;
+        top: 20%;
+        left: 25%;
+        width: 40px;
+        height: 30px;
+        background: radial-gradient(ellipse, rgba(76, 175, 80, 0.3) 0%, transparent 70%);
+        border-radius: 50%;
+        animation: brainScanPulse 5s ease-in-out infinite;
+      }
+
+      .brain-scan:nth-child(29) { top: 15%; left: 40%; animation-delay: 0s; }
+      .brain-scan:nth-child(30) { top: 65%; left: 60%; animation-delay: 2.5s; }
+
+      @keyframes brainScanFloat {
+        0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+        25% { transform: translateY(-15px) rotateX(45deg) rotateY(45deg) rotateZ(10deg); }
+        50% { transform: translateY(-30px) rotateX(90deg) rotateY(90deg) rotateZ(0deg); }
+        75% { transform: translateY(-15px) rotateX(135deg) rotateY(135deg) rotateZ(-10deg); }
+      }
+
+      @keyframes brainScanPulse {
+        0%, 100% { opacity: 0.2; transform: scale(1); }
+        50% { opacity: 0.6; transform: scale(1.1); }
+      }
+
+      .medical-wave {
+        position: absolute;
+        width: 100px;
+        height: 4px;
+        background: linear-gradient(to right, transparent 0%, rgba(76, 175, 80, 0.3) 20%, rgba(46, 125, 50, 0.5) 50%, rgba(76, 175, 80, 0.3) 80%, transparent 100%);
+        animation: wavePropagate 7s ease-in-out infinite;
+        transform-style: preserve-3d;
+      }
+
+      .medical-wave:nth-child(31) { top: 25%; left: 5%; animation-delay: 0s; }
+      .medical-wave:nth-child(32) { top: 45%; left: 90%; animation-delay: 1.75s; }
+      .medical-wave:nth-child(33) { top: 75%; left: 25%; animation-delay: 3.5s; }
+
+      @keyframes wavePropagate {
+        0% { transform: scaleX(0.5) rotateX(0deg) rotateY(0deg); opacity: 0.3; }
+        50% { transform: scaleX(1.2) rotateX(180deg) rotateY(180deg); opacity: 0.8; }
+        100% { transform: scaleX(0.5) rotateX(360deg) rotateY(360deg); opacity: 0.3; }
+      }
+
+      .data-particle {
+        position: absolute;
+        width: 6px;
+        height: 6px;
+        background: rgba(76, 175, 80, 0.6);
+        border-radius: 50%;
+        animation: particleFlow 9s linear infinite;
+        transform-style: preserve-3d;
+      }
+
+      .data-particle:nth-child(34) { top: 35%; left: 10%; animation-delay: 0s; }
+      .data-particle:nth-child(35) { top: 55%; left: 90%; animation-delay: 1s; }
+      .data-particle:nth-child(36) { top: 85%; left: 40%; animation-delay: 2s; }
+      .data-particle:nth-child(37) { top: 5%; left: 75%; animation-delay: 3s; }
+      .data-particle:nth-child(38) { top: 95%; left: 15%; animation-delay: 4s; }
+
+      @keyframes particleFlow {
+        0% { transform: translateX(0px) translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateX(50px) translateY(-50px) rotateX(360deg) rotateY(360deg) rotateZ(360deg); opacity: 0; }
+      }
+
+      .card { 
+        background: rgba(255, 255, 255, 0.95); 
+        padding:12px; 
+        border-radius:8px; 
+        box-shadow: 0 1px 6px rgba(0,0,0,0.06); 
+        max-width:980px; 
+        margin:auto;
+        position: relative;
+        z-index: 1;
+      }
+      h1 { margin:0 0 8px 0 }
+      .controls { display:flex; gap:8px; margin-bottom:12px }
+      .session { padding:8px; border-bottom:1px solid #eee }
+      .meta { color:#666; font-size:13px }
+      button { padding:6px 10px; border-radius:6px; border:1px solid #ddd; background:#fff; cursor:pointer }
+    </style>
+  </head>
+  <body>
+    <div class="medical-bg">
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="dna-strand"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="cell"></div>
+      <div class="neuron"></div>
+      <div class="neuron"></div>
+      <div class="neuron"></div>
+      <div class="medical-icon">🧠</div>
+      <div class="medical-icon">🔬</div>
+      <div class="medical-icon">⚕️</div>
+      <div class="medical-icon">🩺</div>
+      <div class="brain-3d"></div>
+      <div class="dna-helix"></div>
+      <div class="mri-slice"></div>
+      <div class="mri-slice"></div>
+      <div class="mri-slice"></div>
+      <div class="mri-slice"></div>
+      <div class="ct-scan"></div>
+      <div class="ct-scan"></div>
+      <div class="ct-scan"></div>
+      <div class="brain-scan"></div>
+      <div class="brain-scan"></div>
+      <div class="medical-wave"></div>
+      <div class="medical-wave"></div>
+      <div class="medical-wave"></div>
+      <div class="data-particle"></div>
+      <div class="data-particle"></div>
+      <div class="data-particle"></div>
+      <div class="data-particle"></div>
+      <div class="data-particle"></div>
+    </div>
+    <div class="card">
+      <h1>Admin — Sessions & Uploads</h1>
+      <div class="meta">Use the admin token to manage sessions, upload model artifacts, and download or remove stored outputs.</div>
+
+      <div id="auth-area" style="margin-top:12px" class="controls">
+        <input id="token" placeholder="Admin token (or leave blank to use username/password)" style="flex:1; padding:8px; border-radius:6px; border:1px solid #ddd" />
+        <input id="adminUser" placeholder="Admin user" style="width:160px; padding:8px; border-radius:6px; border:1px solid #ddd" />
+        <input id="adminPass" placeholder="Password" type="password" style="width:160px; padding:8px; border-radius:6px; border:1px solid #ddd" />
+        <button id="load">Load</button>
+        <button id="clear">Clear</button>
+      </div>
+
+      <div id="controls" style="margin-top:12px; display:none;">
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+          <label class="meta" style="min-width:120px">Upload model (.h5)</label>
+          <input id="modelFile" type="file" accept=".h5" />
+          <button id="uploadModel">Upload Model</button>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+          <label class="meta" style="min-width:120px">Upload artifact to session</label>
+          <select id="sessionSelect" style="min-width:220px"></select>
+          <input id="artifactFile" type="file" />
+          <input id="artifactName" placeholder="filename (e.g. cam.png)" style="width:160px" />
+          <button id="uploadArtifact">Upload</button>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center; margin-bottom:8px;">
+          <label class="meta" style="min-width:120px">Session actions</label>
+          <button id="refreshList">Refresh List</button>
+          <button id="deleteSession">Delete Selected Session</button>
+        </div>
+      </div>
+
+      <div id="locked" style="margin-top:12px; display:none;">
+        <div class="meta">Admin token required to view sessions.</div>
+      </div>
+      <div id="results" style="margin-top:12px; display:none"></div>
+      <div style="margin-top:12px"><a href="/">Back to app</a></div>
+    </div>
+
+    <script>
+      const tokenInput = document.getElementById('token');
+      const loadBtn = document.getElementById('load');
+      const clearBtn = document.getElementById('clear');
+      const resultsEl = document.getElementById('results');
+      const authArea = document.getElementById('auth-area');
+      const lockedEl = document.getElementById('locked');
+      const adminUserInput = document.getElementById('adminUser');
+      const adminPassInput = document.getElementById('adminPass');
+
+      // If a token or basic creds are stored in sessionStorage, prefill and auto-load
+      const storedToken = sessionStorage.getItem('admin_token');
+      const storedBasic = sessionStorage.getItem('admin_basic');
+      if(storedToken){ tokenInput.value = storedToken; _doLoad(); }
+      else if(storedBasic){
+        // storedBasic holds base64 of user:pass
+        const decoded = atob(storedBasic);
+        const parts = decoded.split(':');
+        adminUserInput.value = parts[0] || '';
+        // do not prefill password for security, but mark as loaded
+        _doLoad();
+      }
+
+      loadBtn.addEventListener('click', async ()=>{
+        const t = tokenInput.value.trim();
+        const u = adminUserInput.value.trim();
+        const p = adminPassInput.value;
+        if(t){ sessionStorage.setItem('admin_token', t); sessionStorage.removeItem('admin_basic'); await _doLoad(); return }
+        if(u && p){ sessionStorage.setItem('admin_basic', btoa(u + ':' + p)); sessionStorage.removeItem('admin_token'); await _doLoad(); return }
+        alert('Enter admin token OR username+password');
+      });
+
+      clearBtn.addEventListener('click', ()=>{ sessionStorage.removeItem('admin_token'); sessionStorage.removeItem('admin_basic'); tokenInput.value=''; adminUserInput.value=''; adminPassInput.value=''; resultsEl.innerHTML=''; resultsEl.style.display='none'; authArea.style.display='flex'; lockedEl.style.display='none'; });
+
+      function _buildAuthHeader(){
+        const t = tokenInput.value.trim() || sessionStorage.getItem('admin_token');
+        if(t){ return {'Authorization': 'Bearer ' + t}; }
+        const basic = sessionStorage.getItem('admin_basic');
+        if(basic){ return {'Authorization': 'Basic ' + basic}; }
+        const u = adminUserInput.value.trim();
+        const p = adminPassInput.value;
+        if(u && p){ return {'Authorization': 'Basic ' + btoa(u + ':' + p)} }
+        return {};
+      }
+
+      async function _doLoad(){
+        const hdr = _buildAuthHeader();
+        // attempt to list sessions; if 401/403, show locked state
+        const res = await fetch('/admin/sessions', {headers: hdr});
+        if(res.status === 401 || res.status === 403){
+          alert('Invalid or missing admin credentials');
+          sessionStorage.removeItem('admin_token');
+          sessionStorage.removeItem('admin_basic');
+          lockedEl.style.display = 'block';
+          resultsEl.style.display = 'none';
+          return;
+        }
+        if(!res.ok){ alert('Error listing sessions: '+res.status); return }
+        const j = await res.json();
+        const sessions = j.sessions || [];
+        resultsEl.innerHTML='';
+        const sessSelect = document.getElementById('sessionSelect');
+        sessSelect.innerHTML = '';
+        if(sessions.length===0){ resultsEl.innerHTML = '<div class="meta">No sessions found.</div>'; resultsEl.style.display='block'; authArea.style.display='none'; lockedEl.style.display='none'; document.getElementById('controls').style.display='block'; return }
+        sessions.forEach(s=>{
+          const d = document.createElement('div'); d.className='session';
+          const title = document.createElement('div'); title.innerHTML = `<strong>${s.session_id}</strong> <span class="meta">${s.label ? '- '+s.label+' ('+s.confidence+')' : ''}</span>`;
+          d.appendChild(title);
+          const b1 = document.createElement('button'); b1.innerText='Download predict.json';
+          b1.onclick = ()=>downloadArtifact(s.session_id, 'predict.json');
+          const b2 = document.createElement('button'); b2.innerText='Download cam.png';
+          b2.style.marginLeft='8px';
+          b2.onclick = ()=>downloadArtifact(s.session_id, 'cam.png');
+          d.appendChild(b1); d.appendChild(b2);
+          const del = document.createElement('button'); del.innerText = 'Delete'; del.style.marginLeft='8px';
+          del.onclick = ()=>deleteSessionConfirm(s.session_id);
+          d.appendChild(del);
+          resultsEl.appendChild(d);
+          const opt = document.createElement('option'); opt.value = s.session_id; opt.innerText = s.session_id + (s.label ? ' - ' + s.label : ''); sessSelect.appendChild(opt);
+        });
+        resultsEl.style.display='block';
+        authArea.style.display='none';
+        lockedEl.style.display='none';
+        document.getElementById('controls').style.display='block';
+      }
+
+      async function downloadArtifact(sessionId, filename){
+        const hdr = _buildAuthHeader();
+        const r = await fetch(`/admin/sessions/${sessionId}/artifact/${filename}`, {headers: hdr});
+        if(!r.ok){ alert('Error fetching artifact: '+r.status); return }
+        const blob = await r.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = filename; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+      }
+
+      // Delete session (server-side cleanup)
+      async function deleteSessionConfirm(sessionId){
+        if(!confirm('Delete session and all artifacts for ' + sessionId + '?')) return;
+        const hdr = _buildAuthHeader();
+        const r = await fetch(`/admin/sessions/${sessionId}`, {method: 'DELETE', headers: hdr});
+        if(!r.ok){ alert('Delete failed: '+r.status); return }
+        alert('Deleted session ' + sessionId);
+        await _doLoad();
+      }
+
+      // Upload model file
+      document.getElementById('uploadModel').addEventListener('click', async ()=>{
+        const f = document.getElementById('modelFile').files[0];
+        const hdr = _buildAuthHeader();
+        if(!hdr || Object.keys(hdr).length===0){ alert('Admin credentials required'); return }
+        if(!f){ alert('Select a .h5 model file'); return }
+        const fd = new FormData(); fd.append('file', f);
+        const r = await fetch('/admin/upload/model', {method:'POST', headers: hdr, body: fd});
+        if(!r.ok){ alert('Upload failed: '+r.status); return }
+        alert('Model uploaded successfully');
+      });
+
+      // Upload artifact into selected session
+      document.getElementById('uploadArtifact').addEventListener('click', async ()=>{
+        const f = document.getElementById('artifactFile').files[0];
+        const name = document.getElementById('artifactName').value.trim();
+        const sid = document.getElementById('sessionSelect').value;
+        const hdr = _buildAuthHeader();
+        if(!hdr || Object.keys(hdr).length===0 || !sid){ alert('Admin credentials and session required'); return }
+        if(!f && !name){ alert('Provide a file or a filename'); return }
+        const fd = new FormData();
+        if(f) fd.append('file', f);
+        if(name) fd.append('filename', name);
+        const r = await fetch(`/admin/upload/artifact/${sid}`, {method:'POST', headers: hdr, body: fd});
+        if(!r.ok){ alert('Artifact upload failed: '+r.status); return }
+        alert('Uploaded artifact to session ' + sid);
+        await _doLoad();
+      });
+
+      document.getElementById('refreshList').addEventListener('click', async ()=>{ await _doLoad(); });
+
+      document.getElementById('deleteSession').addEventListener('click', async ()=>{ const sid = document.getElementById('sessionSelect').value; if(!sid){ alert('Select a session'); return } deleteSessionConfirm(sid); });
+    </script>
+  </body>
+</html>

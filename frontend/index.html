@@ -1,0 +1,1275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuro Assist - AI Brain Tumor Detection Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+            perspective: 1000px;
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c, #4facfe, #00f2fe, #43e97b, #38f9d7);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* AI Neural Network System Animation - 3D Monochromatic */
+        .neural-network {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            pointer-events: none;
+            background: radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.03) 0%, transparent 50%),
+                        radial-gradient(circle at 70% 60%, rgba(200, 200, 200, 0.02) 0%, transparent 50%);
+            perspective: 1500px;
+            transform-style: preserve-3d;
+        }
+
+        .neural-node {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(220, 220, 220, 0.7) 50%, rgba(180, 180, 180, 0.5) 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 80px rgba(200, 200, 200, 0.4), 0 0 120px rgba(150, 150, 150, 0.2);
+            animation: nodePulse3D 4s ease-in-out infinite;
+            transform-style: preserve-3d;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .neural-node.large {
+            width: 40px;
+            height: 40px;
+            box-shadow: 0 0 60px rgba(255, 255, 255, 1), 0 0 120px rgba(200, 200, 200, 0.6), 0 0 180px rgba(150, 150, 150, 0.3);
+        }
+
+        .neural-node.xlarge {
+            width: 60px;
+            height: 60px;
+            box-shadow: 0 0 80px rgba(255, 255, 255, 1.2), 0 0 160px rgba(200, 200, 200, 0.8), 0 0 240px rgba(150, 150, 150, 0.4);
+        }
+
+        /* Input Layer Nodes */
+        .neural-node:nth-child(1) { top: 20%; left: 10%; animation-delay: 0s; }
+        .neural-node:nth-child(2) { top: 30%; left: 10%; animation-delay: 0.2s; }
+        .neural-node:nth-child(3) { top: 40%; left: 10%; animation-delay: 0.4s; }
+        .neural-node:nth-child(4) { top: 50%; left: 10%; animation-delay: 0.6s; }
+        .neural-node:nth-child(5) { top: 60%; left: 10%; animation-delay: 0.8s; }
+        .neural-node:nth-child(6) { top: 70%; left: 10%; animation-delay: 1s; }
+        .neural-node:nth-child(7) { top: 80%; left: 10%; animation-delay: 1.2s; }
+
+        /* Hidden Layer Nodes */
+        .neural-node:nth-child(8) { top: 25%; left: 30%; animation-delay: 0.5s; }
+        .neural-node:nth-child(9) { top: 35%; left: 30%; animation-delay: 0.7s; }
+        .neural-node:nth-child(10) { top: 45%; left: 30%; animation-delay: 0.9s; }
+        .neural-node:nth-child(11) { top: 55%; left: 30%; animation-delay: 1.1s; }
+        .neural-node:nth-child(12) { top: 65%; left: 30%; animation-delay: 1.3s; }
+        .neural-node:nth-child(13) { top: 75%; left: 30%; animation-delay: 1.5s; }
+
+        .neural-node:nth-child(14) { top: 20%; left: 50%; animation-delay: 1s; }
+        .neural-node:nth-child(15) { top: 30%; left: 50%; animation-delay: 1.2s; }
+        .neural-node:nth-child(16) { top: 40%; left: 50%; animation-delay: 1.4s; }
+        .neural-node:nth-child(17) { top: 50%; left: 50%; animation-delay: 1.6s; }
+        .neural-node:nth-child(18) { top: 60%; left: 50%; animation-delay: 1.8s; }
+        .neural-node:nth-child(19) { top: 70%; left: 50%; animation-delay: 2s; }
+        .neural-node:nth-child(20) { top: 80%; left: 50%; animation-delay: 2.2s; }
+
+        /* Output Layer Nodes */
+        .neural-node:nth-child(21) { top: 35%; left: 70%; animation-delay: 1.5s; }
+        .neural-node:nth-child(22) { top: 45%; left: 70%; animation-delay: 1.7s; }
+        .neural-node:nth-child(23) { top: 55%; left: 70%; animation-delay: 1.9s; }
+        .neural-node:nth-child(24) { top: 65%; left: 70%; animation-delay: 2.1s; }
+
+        /* Central Processing Node */
+        .neural-node:nth-child(25) { top: 50%; left: 50%; animation-delay: 0s; }
+        .neural-node:nth-child(25).xlarge { background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(76, 175, 80, 0.8) 30%, rgba(46, 125, 50, 0.6) 100%); }
+
+        @keyframes nodePulse3D {
+            0%, 100% {
+                transform: scale(1) rotateX(0deg) rotateY(0deg);
+                opacity: 0.7;
+                box-shadow: 0 0 40px rgba(255, 255, 255, 0.8), 0 0 80px rgba(200, 200, 200, 0.4), 0 0 120px rgba(150, 150, 150, 0.2);
+            }
+            50% {
+                transform: scale(1.3) rotateX(10deg) rotateY(10deg);
+                opacity: 1;
+                box-shadow: 0 0 60px rgba(255, 255, 255, 1.2), 0 0 120px rgba(200, 200, 200, 0.8), 0 0 180px rgba(150, 150, 150, 0.4);
+            }
+        }
+
+        .neural-connection {
+            position: absolute;
+            height: 4px;
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0.4) 0%, rgba(102, 126, 234, 0.8) 25%, rgba(118, 75, 162, 0.8) 50%, rgba(240, 147, 251, 0.8) 75%, rgba(255, 255, 255, 0.4) 100%);
+            background-size: 200% 200%;
+            animation: connectionFlow3D 5s ease-in-out infinite, colorShift 8s ease-in-out infinite;
+            transform-origin: left center;
+            transform-style: preserve-3d;
+            border-radius: 2px;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .neural-connection::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(220, 220, 220, 0.7) 100%);
+            border-radius: 50%;
+            left: -8px;
+            top: -6px;
+            animation: dataPacket3D 5s ease-in-out infinite;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+
+        /* Input to Hidden Layer Connections */
+        .neural-connection:nth-child(26) { top: 25%; left: 10%; width: 20%; animation-delay: 0s; }
+        .neural-connection:nth-child(27) { top: 35%; left: 10%; width: 20%; animation-delay: 0.3s; }
+        .neural-connection:nth-child(28) { top: 45%; left: 10%; width: 20%; animation-delay: 0.6s; }
+        .neural-connection:nth-child(29) { top: 55%; left: 10%; width: 20%; animation-delay: 0.9s; }
+        .neural-connection:nth-child(30) { top: 65%; left: 10%; width: 20%; animation-delay: 1.2s; }
+
+        /* Hidden to Output Layer Connections */
+        .neural-connection:nth-child(31) { top: 40%; left: 50%; width: 20%; animation-delay: 1.5s; }
+        .neural-connection:nth-child(32) { top: 50%; left: 50%; width: 20%; animation-delay: 1.8s; }
+        .neural-connection:nth-child(33) { top: 60%; left: 50%; width: 20%; animation-delay: 2.1s; }
+
+        @keyframes connectionFlow3D {
+            0%, 100% {
+                opacity: 0.4;
+                transform: scaleX(1) rotateX(0deg);
+                box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+            50% {
+                opacity: 0.9;
+                transform: scaleX(1.1) rotateX(5deg);
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        @keyframes colorShift {
+            0%, 100% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+        }
+
+        @keyframes dataPacket3D {
+            0% {
+                left: -8px;
+                opacity: 0;
+                transform: scale(0.5) rotateX(0deg);
+            }
+            10% {
+                opacity: 1;
+                transform: scale(1) rotateX(10deg);
+            }
+            90% {
+                opacity: 1;
+                transform: scale(1) rotateX(10deg);
+            }
+            100% {
+                left: calc(100% - 8px);
+                opacity: 0;
+                transform: scale(0.5) rotateX(0deg);
+            }
+        }
+
+        .ai-brain {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 320px;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.1) 0%, rgba(220, 220, 220, 0.15) 50%, rgba(180, 180, 180, 0.05) 80%, transparent 100%);
+            border-radius: 50% 50% 40% 40%;
+            transform: translate(-50%, -50%);
+            animation: aiBrainProcess3D 10s ease-in-out infinite;
+            transform-style: preserve-3d;
+            box-shadow: 0 0 100px rgba(255, 255, 255, 0.4), 0 0 200px rgba(200, 200, 200, 0.2), 0 0 300px rgba(150, 150, 150, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .ai-brain::before {
+            content: '';
+            position: absolute;
+            top: 30%;
+            left: 30%;
+            width: 160px;
+            height: 120px;
+            background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.3) 0%, rgba(220, 220, 220, 0.2) 50%, rgba(180, 180, 180, 0.1) 80%, transparent 100%);
+            border-radius: 50%;
+            animation: aiBrainPulse3D 6s ease-in-out infinite;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .ai-brain::after {
+            content: 'AI';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            color: rgba(255, 255, 255, 0.9);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(200, 200, 200, 0.6), 0 0 60px rgba(150, 150, 150, 0.4);
+            animation: aiTextGlow3D 4s ease-in-out infinite;
+            font-family: 'Arial Black', Arial, sans-serif;
+            letter-spacing: 2px;
+        }
+
+        @keyframes aiBrainProcess {
+            0% {
+                transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1);
+                box-shadow: 0 0 100px rgba(255, 255, 255, 0.4), 0 0 200px rgba(200, 200, 200, 0.2), 0 0 300px rgba(150, 150, 150, 0.1);
+            }
+            25% {
+                transform: translate(-50%, -50%) rotateX(15deg) rotateY(15deg) rotateZ(5deg) scale(1.1) translateZ(20px);
+                box-shadow: 0 0 150px rgba(255, 255, 255, 0.6), 0 0 300px rgba(200, 200, 200, 0.3), 0 0 450px rgba(150, 150, 150, 0.2);
+            }
+            50% {
+                transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.2) translateZ(40px);
+                box-shadow: 0 0 200px rgba(255, 255, 255, 0.8), 0 0 400px rgba(200, 200, 200, 0.4), 0 0 600px rgba(150, 150, 150, 0.3);
+            }
+            75% {
+                transform: translate(-50%, -50%) rotateX(-15deg) rotateY(-15deg) rotateZ(-5deg) scale(1.1) translateZ(20px);
+                box-shadow: 0 0 150px rgba(255, 255, 255, 0.6), 0 0 300px rgba(200, 200, 200, 0.3), 0 0 450px rgba(150, 150, 150, 0.2);
+            }
+            100% {
+                transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1) translateZ(0px);
+                box-shadow: 0 0 100px rgba(255, 255, 255, 0.4), 0 0 200px rgba(200, 200, 200, 0.2), 0 0 300px rgba(150, 150, 150, 0.1);
+            }
+        }
+
+        @keyframes aiBrainPulse {
+            0%, 100% {
+                transform: scale(1) rotateX(0deg);
+                opacity: 0.4;
+            }
+            50% {
+                transform: scale(1.3) rotateX(10deg) translateZ(10px);
+                opacity: 0.8;
+            }
+        }
+
+        @keyframes aiTextGlow {
+            0%, 100% {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 0.8), 0 0 40px rgba(200, 200, 200, 0.6), 0 0 60px rgba(150, 150, 150, 0.4);
+                transform: translate(-50%, -50%) scale(1) rotateX(0deg);
+            }
+            50% {
+                text-shadow: 0 0 40px rgba(255, 255, 255, 1.2), 0 0 80px rgba(200, 200, 200, 0.9), 0 0 120px rgba(150, 150, 150, 0.6);
+                transform: translate(-50%, -50%) scale(1.1) rotateX(5deg) translateZ(5px);
+            }
+        }
+
+        .data-stream {
+            position: absolute;
+            width: 8px;
+            height: 200px;
+            background: linear-gradient(to bottom, transparent 0%, rgba(255, 255, 255, 0.7) 20%, rgba(102, 126, 234, 0.9) 40%, rgba(118, 75, 162, 0.9) 60%, rgba(240, 147, 251, 0.9) 80%, transparent 100%);
+            background-size: 100% 300%;
+            animation: dataStream3D 8s linear infinite, dataColorFlow 6s ease-in-out infinite;
+            transform-style: preserve-3d;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            border-radius: 4px;
+        }
+
+        .color-orb {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.6) 50%, rgba(240, 147, 251, 0.4) 100%);
+            animation: orbFloat 10s ease-in-out infinite, orbColorShift 12s ease-in-out infinite;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+            transform-style: preserve-3d;
+        }
+
+        .color-orb:nth-child(38) { top: 15%; left: 20%; animation-delay: 0s; }
+        .color-orb:nth-child(39) { top: 35%; left: 75%; animation-delay: 3s; }
+        .color-orb:nth-child(40) { top: 65%; left: 30%; animation-delay: 6s; }
+        .color-orb:nth-child(41) { top: 85%; left: 80%; animation-delay: 9s; }
+
+        @keyframes orbFloat {
+            0%, 100% {
+                transform: translateY(0px) rotateX(0deg) rotateY(0deg) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translateY(-20px) rotateX(180deg) rotateY(180deg) scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        @keyframes orbColorShift {
+            0%, 100% {
+                background: radial-gradient(circle, rgba(102, 126, 234, 0.8) 0%, rgba(118, 75, 162, 0.6) 50%, rgba(240, 147, 251, 0.4) 100%);
+                box-shadow: 0 0 30px rgba(102, 126, 234, 0.6);
+            }
+            33% {
+                background: radial-gradient(circle, rgba(240, 147, 251, 0.8) 0%, rgba(245, 87, 108, 0.6) 50%, rgba(79, 172, 254, 0.4) 100%);
+                box-shadow: 0 0 30px rgba(240, 147, 251, 0.6);
+            }
+            66% {
+                background: radial-gradient(circle, rgba(79, 172, 254, 0.8) 0%, rgba(0, 242, 254, 0.6) 50%, rgba(67, 233, 123, 0.4) 100%);
+                box-shadow: 0 0 30px rgba(79, 172, 254, 0.6);
+            }
+        }
+
+        .data-stream:nth-child(34) { top: 10%; left: 15%; transform: rotate(45deg); animation-delay: 0s; }
+        .data-stream:nth-child(35) { top: 20%; left: 85%; transform: rotate(-30deg); animation-delay: 1s; }
+        .data-stream:nth-child(36) { top: 70%; left: 25%; transform: rotate(60deg); animation-delay: 2s; }
+        .data-stream:nth-child(37) { top: 80%; left: 75%; transform: rotate(-45deg); animation-delay: 3s; }
+
+        @keyframes dataStream3D {
+            0% {
+                opacity: 0;
+                transform: translateY(0px) scaleY(0.5) rotateX(0deg);
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(0px) scaleY(1.2) rotateX(10deg) translateZ(10px);
+                box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(0px) scaleY(1.2) rotateX(10deg) translateZ(10px);
+                box-shadow: 0 0 40px rgba(255, 255, 255, 0.8);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(0px) scaleY(0.5) rotateX(0deg);
+                box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        @keyframes dataColorFlow {
+            0%, 100% {
+                background-position: 0% 0%;
+            }
+            50% {
+                background-position: 0% 100%;
+            }
+        }
+
+        .dna-strand {
+            position: absolute;
+            width: 2px;
+            height: 200px;
+            background: linear-gradient(to bottom, rgba(76, 175, 80, 0.1), rgba(46, 125, 50, 0.3), rgba(76, 175, 80, 0.1));
+            animation: dnaFloat 8s ease-in-out infinite;
+        }
+
+        .dna-strand:nth-child(1) { left: 10%; animation-delay: 0s; }
+        .dna-strand:nth-child(2) { left: 20%; animation-delay: 1s; height: 150px; }
+        .dna-strand:nth-child(3) { left: 30%; animation-delay: 2s; height: 180px; }
+        .dna-strand:nth-child(4) { left: 40%; animation-delay: 3s; height: 120px; }
+        .dna-strand:nth-child(5) { left: 50%; animation-delay: 4s; height: 160px; }
+        .dna-strand:nth-child(6) { left: 60%; animation-delay: 5s; height: 140px; }
+        .dna-strand:nth-child(7) { left: 70%; animation-delay: 6s; height: 170px; }
+        .dna-strand:nth-child(8) { left: 80%; animation-delay: 7s; height: 130px; }
+        .dna-strand:nth-child(9) { left: 90%; animation-delay: 8s; height: 190px; }
+
+        @keyframes dnaFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg) rotateX(0deg) rotateY(0deg); opacity: 0.3; }
+            25% { transform: translateY(-20px) rotate(5deg) rotateX(10deg) rotateY(5deg); opacity: 0.6; }
+            50% { transform: translateY(-40px) rotate(0deg) rotateX(0deg) rotateY(0deg); opacity: 0.8; }
+            75% { transform: translateY(-20px) rotate(-5deg) rotateX(-10deg) rotateY(-5deg); opacity: 0.6; }
+        }
+
+        .cell {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 2px solid rgba(76, 175, 80, 0.2);
+            border-radius: 50%;
+            animation: cellPulse 6s ease-in-out infinite;
+        }
+
+        .cell:nth-child(10) { top: 20%; left: 15%; animation-delay: 0s; }
+        .cell:nth-child(11) { top: 40%; left: 85%; animation-delay: 2s; }
+        .cell:nth-child(12) { top: 60%; left: 25%; animation-delay: 4s; }
+        .cell:nth-child(13) { top: 80%; left: 75%; animation-delay: 6s; }
+        .cell:nth-child(14) { top: 30%; left: 65%; animation-delay: 8s; }
+
+        @keyframes cellPulse {
+            0%, 100% { transform: scale(1) rotateX(0deg) rotateY(0deg); opacity: 0.2; }
+            50% { transform: scale(1.2) rotateX(180deg) rotateY(180deg); opacity: 0.4; }
+        }
+
+        .neuron {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: rgba(76, 175, 80, 0.3);
+            border-radius: 50%;
+            animation: neuronSpark 4s ease-in-out infinite;
+        }
+
+        .neuron::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 2px;
+            background: linear-gradient(to right, rgba(76, 175, 80, 0.3), transparent);
+            transform: translate(-50%, -50%);
+        }
+
+        .neuron:nth-child(15) { top: 25%; left: 35%; animation-delay: 0s; }
+        .neuron:nth-child(16) { top: 55%; left: 55%; animation-delay: 1.5s; }
+        .neuron:nth-child(17) { top: 75%; left: 45%; animation-delay: 3s; }
+
+        @keyframes neuronSpark {
+            0%, 100% { opacity: 0.3; transform: scale(1) rotateX(0deg) rotateY(0deg); }
+            50% { opacity: 0.8; transform: scale(1.3) rotateX(180deg) rotateY(180deg); }
+        }
+
+        .medical-icon {
+            position: absolute;
+            font-size: 24px;
+            color: rgba(76, 175, 80, 0.2);
+            animation: iconFloat 10s ease-in-out infinite;
+        }
+
+        .medical-icon:nth-child(18) { top: 15%; left: 5%; content: '🧠'; }
+        .medical-icon:nth-child(19) { top: 35%; left: 95%; content: '🔬'; }
+        .medical-icon:nth-child(20) { top: 65%; left: 8%; content: '⚕️'; }
+        .medical-icon:nth-child(21) { top: 85%; left: 92%; content: '🩺'; }
+
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0px) rotate(0deg) rotateX(0deg) rotateY(0deg); }
+            33% { transform: translateY(-10px) rotate(120deg) rotateX(120deg) rotateY(120deg); }
+            66% { transform: translateY(10px) rotate(240deg) rotateX(240deg) rotateY(240deg); }
+        }
+
+        .brain-3d {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100px;
+            height: 80px;
+            background: radial-gradient(ellipse at center, rgba(76, 175, 80, 0.1) 0%, transparent 70%);
+            border-radius: 50% 50% 40% 40%;
+            transform: translate(-50%, -50%);
+            animation: brainRotate 15s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        .brain-3d::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 20%;
+            width: 60px;
+            height: 40px;
+            background: radial-gradient(ellipse at center, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: brainPulse 3s ease-in-out infinite;
+        }
+
+        @keyframes brainRotate {
+            0% { transform: translate(-50%, -50%) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: translate(-50%, -50%) rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
+        @keyframes brainPulse {
+            0%, 100% { transform: scale(1); opacity: 0.2; }
+            50% { transform: scale(1.1); opacity: 0.4; }
+        }
+
+        .dna-helix {
+            position: absolute;
+            top: 70%;
+            left: 10%;
+            width: 4px;
+            height: 100px;
+            background: linear-gradient(to bottom, rgba(76, 175, 80, 0.3), rgba(46, 125, 50, 0.5), rgba(76, 175, 80, 0.3));
+            transform-origin: center;
+            animation: helixTwist 12s ease-in-out infinite;
+        }
+
+        .dna-helix::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -10px;
+            width: 24px;
+            height: 100px;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0px,
+                transparent 10px,
+                rgba(76, 175, 80, 0.2) 10px,
+                rgba(76, 175, 80, 0.2) 20px
+            );
+            animation: helixTwist 12s ease-in-out infinite reverse;
+        }
+
+        @keyframes helixTwist {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            50% { transform: rotateX(180deg) rotateY(180deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        /* New 3D Medical Capture Animations */
+        .mri-slice {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(76, 175, 80, 0.1) 0%, rgba(46, 125, 50, 0.2) 50%, transparent 100%);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 50%;
+            animation: mriRotate 8s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        .mri-slice::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: mriPulse 4s ease-in-out infinite;
+        }
+
+        .mri-slice:nth-child(22) { top: 10%; left: 20%; animation-delay: 0s; }
+        .mri-slice:nth-child(23) { top: 30%; left: 80%; animation-delay: 2s; }
+        .mri-slice:nth-child(24) { top: 50%; left: 15%; animation-delay: 4s; }
+        .mri-slice:nth-child(25) { top: 70%; left: 85%; animation-delay: 6s; }
+
+        @keyframes mriRotate {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1); }
+            25% { transform: rotateX(90deg) rotateY(90deg) rotateZ(90deg) scale(1.1); }
+            50% { transform: rotateX(180deg) rotateY(180deg) rotateZ(180deg) scale(1); }
+            75% { transform: rotateX(270deg) rotateY(270deg) rotateZ(270deg) scale(1.1); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg) scale(1); }
+        }
+
+        @keyframes mriPulse {
+            0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        .ct-scan {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: conic-gradient(from 0deg, rgba(76, 175, 80, 0.1) 0deg, rgba(46, 125, 50, 0.3) 90deg, rgba(76, 175, 80, 0.1) 180deg, transparent 270deg);
+            border-radius: 50%;
+            animation: ctSpin 6s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        .ct-scan::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: 30px;
+            height: 30px;
+            background: radial-gradient(circle, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: ctInnerRotate 3s linear infinite reverse;
+        }
+
+        .ct-scan:nth-child(26) { top: 20%; left: 70%; animation-delay: 0s; }
+        .ct-scan:nth-child(27) { top: 60%; left: 30%; animation-delay: 1.5s; }
+        .ct-scan:nth-child(28) { top: 40%; left: 50%; animation-delay: 3s; }
+
+        @keyframes ctSpin {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
+        @keyframes ctInnerRotate {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.1); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+
+        .brain-scan {
+            position: absolute;
+            width: 80px;
+            height: 60px;
+            background: linear-gradient(45deg, rgba(76, 175, 80, 0.1) 0%, rgba(46, 125, 50, 0.2) 50%, rgba(76, 175, 80, 0.1) 100%);
+            border-radius: 50% 50% 40% 40%;
+            animation: brainScanFloat 10s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        .brain-scan::before {
+            content: '';
+            position: absolute;
+            top: 20%;
+            left: 25%;
+            width: 40px;
+            height: 30px;
+            background: radial-gradient(ellipse, rgba(76, 175, 80, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: brainScanPulse 5s ease-in-out infinite;
+        }
+
+        .brain-scan:nth-child(29) { top: 15%; left: 40%; animation-delay: 0s; }
+        .brain-scan:nth-child(30) { top: 65%; left: 60%; animation-delay: 2.5s; }
+
+        @keyframes brainScanFloat {
+            0%, 100% { transform: translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            25% { transform: translateY(-15px) rotateX(45deg) rotateY(45deg) rotateZ(10deg); }
+            50% { transform: translateY(-30px) rotateX(90deg) rotateY(90deg) rotateZ(0deg); }
+            75% { transform: translateY(-15px) rotateX(135deg) rotateY(135deg) rotateZ(-10deg); }
+        }
+
+        @keyframes brainScanPulse {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        .medical-wave {
+            position: absolute;
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(to right, transparent 0%, rgba(76, 175, 80, 0.3) 20%, rgba(46, 125, 50, 0.5) 50%, rgba(76, 175, 80, 0.3) 80%, transparent 100%);
+            animation: wavePropagate 7s ease-in-out infinite;
+            transform-style: preserve-3d;
+        }
+
+        .medical-wave:nth-child(31) { top: 25%; left: 5%; animation-delay: 0s; }
+        .medical-wave:nth-child(32) { top: 45%; left: 90%; animation-delay: 1.75s; }
+        .medical-wave:nth-child(33) { top: 75%; left: 25%; animation-delay: 3.5s; }
+
+        @keyframes wavePropagate {
+            0% { transform: scaleX(0.5) rotateX(0deg) rotateY(0deg); opacity: 0.3; }
+            50% { transform: scaleX(1.2) rotateX(180deg) rotateY(180deg); opacity: 0.8; }
+            100% { transform: scaleX(0.5) rotateX(360deg) rotateY(360deg); opacity: 0.3; }
+        }
+
+        .data-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: rgba(76, 175, 80, 0.6);
+            border-radius: 50%;
+            animation: particleFlow 9s linear infinite;
+            transform-style: preserve-3d;
+        }
+
+        .data-particle:nth-child(34) { top: 35%; left: 10%; animation-delay: 0s; }
+        .data-particle:nth-child(35) { top: 55%; left: 90%; animation-delay: 1s; }
+        .data-particle:nth-child(36) { top: 85%; left: 40%; animation-delay: 2s; }
+        .data-particle:nth-child(37) { top: 5%; left: 75%; animation-delay: 3s; }
+        .data-particle:nth-child(38) { top: 95%; left: 15%; animation-delay: 4s; }
+
+        @keyframes particleFlow {
+            0% { transform: translateX(0px) translateY(0px) rotateX(0deg) rotateY(0deg) rotateZ(0deg); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateX(50px) translateY(-50px) rotateX(360deg) rotateY(360deg) rotateZ(360deg); opacity: 0; }
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar-logo {
+            font-size: 24px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .navbar-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .navbar-links a {
+            color: white;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .navbar-links a:hover {
+            opacity: 0.8;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            padding: 100px 20px;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero-title {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .hero-icon {
+            font-size: 60px;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            opacity: 0.95;
+            margin-bottom: 30px;
+        }
+
+        .hero-description {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .cta-button {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            color: white;
+            padding: 16px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            display: inline-block;
+            animation: buttonGradient 8s ease infinite;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            animation: buttonGradient 4s ease infinite;
+        }
+
+        @keyframes buttonGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .features {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .features-title {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #4CAF50;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .feature-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .feature-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+
+        .feature-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .how-it-works {
+            background: #f8f9ff;
+            padding: 80px 20px;
+        }
+
+        .how-it-works-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .how-it-works-title {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #4CAF50;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .step {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid #4CAF50;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .step-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .step-description {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .capabilities {
+            max-width: 1200px;
+            margin: 80px auto;
+            padding: 0 20px;
+        }
+
+        .capabilities-title {
+            font-size: 36px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #4CAF50;
+        }
+
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .capabilities-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .capability-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 10px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .capability-icon {
+            font-size: 32px;
+            min-width: 40px;
+        }
+
+        .capability-text h4 {
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+
+        .capability-text p {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .footer {
+            background: #333;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .footer-text {
+            color: #ccc;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 32px;
+            }
+            .hero-subtitle {
+                font-size: 16px;
+            }
+            .navbar-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="neural-network">
+        <!-- Input Layer Nodes -->
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+
+        <!-- Hidden Layer Nodes -->
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+        <div class="neural-node"></div>
+
+        <!-- Output Layer Nodes -->
+        <div class="neural-node large"></div>
+        <div class="neural-node large"></div>
+        <div class="neural-node large"></div>
+        <div class="neural-node large"></div>
+
+        <!-- Central Processing Node -->
+        <div class="neural-node xlarge"></div>
+
+        <!-- Neural Connections -->
+        <div class="neural-connection"></div>
+        <div class="neural-connection"></div>
+        <div class="neural-connection"></div>
+        <div class="neural-connection"></div>
+        <div class="neural-connection"></div>
+        <div class="neural-connection"></div>
+        <div class="neural-connection"></div>
+        <div class="neural-connection"></div>
+
+        <!-- AI Brain Visualization -->
+        <div class="ai-brain"></div>
+
+        <!-- Data Streams -->
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+        <div class="data-stream"></div>
+
+        <!-- Floating Color Orbs -->
+        <div class="color-orb"></div>
+        <div class="color-orb"></div>
+        <div class="color-orb"></div>
+        <div class="color-orb"></div>
+    </div>
+        <div class="data-particle"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="navbar">
+        <div class="navbar-content">
+            <div class="navbar-logo">
+                <span>🧠</span> Neuro ASSIST
+            </div>
+            <div class="navbar-links">
+                <a href="#features">Features</a>
+                <a href="#how-it-works">How It Works</a>
+                <a href="#capabilities">Capabilities</a>
+                <a href="/frontend/neuro_assist.html" class="cta-button">Get Started</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <div class="hero-content">
+            <div class="hero-title">
+                <span class="hero-icon">🧠</span>
+                Neuro ASSIST
+            </div>
+            <div class="hero-subtitle">
+                AI-Powered Brain Tumor Detection with Explainable AI
+            </div>
+            <div class="hero-description">
+                Neuro ASSIST is a state-of-the-art intelligent chatbot that uses artificial intelligence 
+                to analyze brain MRI scans and detect tumors with exceptional accuracy. 
+                Our system provides transparent explanations so you understand exactly what the AI is analyzing.
+            </div>
+            <a href="/frontend/neuro_assist.html" class="cta-button">🚀 Start Using Neuro ASSIST</a>
+        </div>
+    </div>
+
+    <!-- Features Section -->
+    <div class="features">
+        <div class="features-title" id="features">Key Features</div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <div class="feature-title">Accurate Detection</div>
+                <div class="feature-description">
+                    Uses deep learning models trained on thousands of brain scans to detect tumors with high accuracy
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔍</div>
+                <div class="feature-title">Explainable AI (XAI)</div>
+                <div class="feature-description">
+                    See exactly which regions of the MRI the AI focused on with Class Activation Maps (CAM)
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <div class="feature-title">AI Chat Support</div>
+                <div class="feature-description">
+                    Ask questions about predictions and get detailed explanations from our intelligent assistant
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⚡</div>
+                <div class="feature-title">Instant Results</div>
+                <div class="feature-description">
+                    Get analysis results in seconds without waiting for lengthy manual reviews
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <div class="feature-title">Privacy First</div>
+                <div class="feature-description">
+                    Your medical data stays private with secure session-based processing
+                </div>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <div class="feature-title">Confidence Scoring</div>
+                <div class="feature-description">
+                    Get confidence percentages for each prediction to help inform clinical decisions
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- How It Works -->
+    <div class="how-it-works" id="how-it-works">
+        <div class="how-it-works-content">
+            <div class="how-it-works-title">How It Works</div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-title">Upload MRI Scan</div>
+                    <div class="step-description">
+                        Upload your brain MRI image in JPG, PNG, or other common formats
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-title">AI Analysis</div>
+                    <div class="step-description">
+                        Our AI model analyzes the scan and identifies tumor presence and type
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-title">View Results</div>
+                    <div class="step-description">
+                        See the prediction, confidence score, and CAM visualization showing focus areas
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-title">Chat & Explore</div>
+                    <div class="step-description">
+                        Ask questions about the results and get detailed explanations from the assistant
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Capabilities Section -->
+    <div class="capabilities" id="capabilities">
+        <div class="capabilities-title">What Neuro ASSIST Can Do</div>
+        <div class="capabilities-grid">
+            <div class="capability-item">
+                <div class="capability-icon">🧬</div>
+                <div class="capability-text">
+                    <h4>Tumor Detection</h4>
+                    <p>Detect presence and classify different types of brain tumors including benign, glioma, meningioma, and pituitary tumors</p>
+                </div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-icon">📈</div>
+                <div class="capability-text">
+                    <h4>Confidence Scoring</h4>
+                    <p>Provides percentage confidence for each prediction to help assess reliability of results</p>
+                </div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-icon">🗺️</div>
+                <div class="capability-text">
+                    <h4>Focus Visualization</h4>
+                    <p>Visual heatmaps show exactly which regions of the brain the AI examined for tumor detection</p>
+                </div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-icon">🤖</div>
+                <div class="capability-text">
+                    <h4>Intelligent Chat</h4>
+                    <p>Ask follow-up questions and get detailed medical explanations tailored to your MRI results</p>
+                </div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-icon">📝</div>
+                <div class="capability-text">
+                    <h4>Session Persistence</h4>
+                    <p>Your analysis results and chat history are saved in secure sessions for easy reference</p>
+                </div>
+            </div>
+            <div class="capability-item">
+                <div class="capability-icon">🔄</div>
+                <div class="capability-text">
+                    <h4>Multiple Scans</h4>
+                    <p>Upload and analyze multiple MRI scans with separate tracking and detailed explanations for each</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-content">
+            <div class="footer-title">
+                <span>🧠</span> Neuro ASSIST
+            </div>
+            <div class="footer-text">
+                Advanced AI for Medical Imaging Analysis
+            </div>
+            <div class="footer-text" style="margin-top: 20px;">
+                © 2025 Neuro ASSIST. All Rights Reserved | For Research & Clinical Support Use Only
+            </div>
+            <div class="footer-text" style="margin-top: 10px; color: #999; font-size: 12px;">
+                ⚠️ This tool is intended for educational and research purposes. Always consult with qualified medical professionals for clinical decisions.
+            </div>
+        </div>
+    </div>
+</body>
+</html>

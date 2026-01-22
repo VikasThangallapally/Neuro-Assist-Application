@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuro ASSIST - Loading</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #64be6c 0%, #509b50 50%, #4aa54e 100%);
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        #canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .intro-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .intro-content {
+            text-align: center;
+            animation: fadeIn 1s ease-in forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .title {
+            font-size: 4.5em;
+            font-family: 'Arial Black', Gadget, sans-serif;
+            font-weight: 700;
+            background: linear-gradient(135deg, #dd1edd 0%, #0099cc 40%, #00a8e8 70%, #0073b1 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-shadow: 0 0 40px rgba(0, 102, 204, 0.3), 0 0 20px rgba(0, 115, 177, 0.2);
+            letter-spacing: 3px;
+            filter: drop-shadow(0 0 15px rgba(0, 73, 177, 0.2));
+        }
+
+        .subtitle {
+            font-size: 1.8em;
+            color: #37020d;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(139, 0, 81, 0.5);
+        }
+
+        .progress-ring {
+            margin-top: 40px;
+        }
+
+        .progress-circle {
+            transform: rotate(-90deg);
+        }
+
+        .progress-text {
+            font-size: 1.2em;
+            color: #220f23;
+            margin-top: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            text-shadow: 0 0 10px rgba(0, 102, 204, 0.3);
+        }
+
+        .features {
+            display: flex;
+            gap: 30px;
+            margin-top: 50px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 900px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #030403;
+            font-size: 1.25em;
+            animation: slideIn 0.8s ease-out forwards;
+            opacity: 0;
+            font-weight: 500;
+        }
+
+        .feature:nth-child(1) { animation-delay: 0.2s; }
+        .feature:nth-child(2) { animation-delay: 0.4s; }
+        .feature:nth-child(3) { animation-delay: 0.6s; }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .feature-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, #033b05, #0b440e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px rgba(105, 4, 83, 0.8);
+        }
+        }
+
+        .loading-bar {
+            width: 200px;
+            height: 3px;
+            background: rgba(6, 182, 212, 0.2);
+            border-radius: 10px;
+            margin-top: 20px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #032404, #81c784, #66bb6a);
+            border-radius: 10px;
+            width: 0%;
+            animation: loading 3s ease-in-out forwards;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.9), 0 0 25px rgba(56, 142, 60, 0.6);
+        }
+
+        @keyframes loading {
+            0% {
+                width: 0%;
+            }
+            50% {
+                width: 70%;
+            }
+            100% {
+                width: 100%;
+            }
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(6, 182, 212, 0.5);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .grid-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(76, 175, 80, 0.08) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(129, 199, 132, 0.08) 1px, transparent 1px);
+            background-size: 50px 50px;
+            opacity: 0.5;
+        }
+
+        .enter-btn {
+            margin-top: 60px;
+            padding: 16px 50px;
+            background: linear-gradient(135deg, #81c784, #43a047);
+            color: rgb(90, 18, 18);
+            border: 2px solid #66bb6a;
+            border-radius: 50px;
+            font-size: 1.3em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 1;
+            animation: fadeInBtn 1s ease-in 1s forwards;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.6), inset 0 0 10px rgba(76, 175, 80, 0.3);
+        }
+
+        @keyframes fadeInBtn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .enter-btn:hover {
+            background: linear-gradient(135deg, #43a047, #81c784);
+            box-shadow: 0 0 30px rgba(76, 175, 80, 0.8), 0 0 20px rgba(56, 142, 60, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .enter-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Glow effect */
+        .glow {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(76, 175, 80, 0.2) 0%, transparent 70%);
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 0.3;
+            }
+        }
+
+        #neuralNetwork {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            opacity: 0.6;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="neuralNetwork"></canvas>
+    <div class="grid-background"></div>
+    <canvas id="canvas"></canvas>
+    
+    <div class="intro-container">
+        <div class="particles" id="particles"></div>
+        <div class="glow" style="width: 300px; height: 300px; top: 50%; left: 50%; transform: translate(-50%, -50%);"></div>
+        
+        <div class="intro-content">
+            <div class="title">🧠 NEURO ASSIST</div>
+            <div class="subtitle">Advanced Brain MRI Analysis Platform</div>
+            
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            
+            <div class="progress-text" id="progressText">Initializing System...</div>
+            
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">🔬</div>
+                    <span>AI-Powered Detection</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">📊</div>
+                    <span>Real-time Analysis</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏥</div>
+                    <span>Medical Expertise</span>
+                </div>
+            </div>
+            
+            <button class="enter-btn" id="enterBtn">Enter Platform</button>
+        </div>
+    </div>
+
+    <script>
+        // Three.js Scene Setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(0x000000, 0);
+        document.body.insertBefore(renderer.domElement, document.getElementById('canvas').nextSibling);
+
+        camera.position.z = 5;
+
+        // Create Brain-like 3D object using icosahedron with deformation
+        const geometry = new THREE.IcosahedronGeometry(2, 4);
+        const material = new THREE.MeshPhongMaterial({
+            color: 0xA0826D,
+            emissive: 0x8B7355,
+            shininess: 100,
+            wireframe: false
+        });
+        const brain = new THREE.Mesh(geometry, material);
+        scene.add(brain);
+
+        // Add wireframe overlay
+        const wireframeGeometry = new THREE.IcosahedronGeometry(2, 4);
+        const wireframeMaterial = new THREE.MeshBasicMaterial({
+            color: 0xB8956A,
+            wireframe: true,
+            linewidth: 2
+        });
+        const wireframe = new THREE.Mesh(wireframeGeometry, wireframeMaterial);
+        scene.add(wireframe);
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+        scene.add(ambientLight);
+
+        const pointLight = new THREE.PointLight(0xA0826D, 1);
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        const pointLight2 = new THREE.PointLight(0x8B7355, 0.8);
+        pointLight2.position.set(-10, -10, 10);
+        scene.add(pointLight2);
+
+        // Particles
+        function createParticles() {
+            const particlesDiv = document.getElementById('particles');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                
+                const duration = 2 + Math.random() * 3;
+                const delay = Math.random() * 2;
+                
+                particle.style.animation = `float ${duration}s linear ${delay}s infinite`;
+                particlesDiv.appendChild(particle);
+            }
+        }
+
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes float {
+                to {
+                    transform: translateY(-100px) translateX(${Math.random() * 50 - 25}px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        createParticles();
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Rotate brain
+            brain.rotation.x += 0.005;
+            brain.rotation.y += 0.008;
+            wireframe.rotation.x = brain.rotation.x;
+            wireframe.rotation.y = brain.rotation.y;
+
+            // Pulse effect
+            const scale = 1 + Math.sin(Date.now() * 0.001) * 0.05;
+            brain.scale.set(scale, scale, scale);
+            wireframe.scale.set(scale, scale, scale);
+
+            renderer.render(scene, camera);
+        }
+
+        animate();
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            const width = window.innerWidth;
+            const height = window.innerHeight;
+            camera.aspect = width / height;
+            camera.updateProjectionMatrix();
+            renderer.setSize(width, height);
+        });
+
+        // Progress animation
+        let progress = 0;
+        const progressInterval = setInterval(() => {
+            progress += Math.random() * 30;
+            if (progress > 100) progress = 100;
+            
+            const progressText = document.getElementById('progressText');
+            if (progress < 30) {
+                progressText.textContent = 'Loading Models...';
+            } else if (progress < 60) {
+                progressText.textContent = 'Initializing AI Engine...';
+            } else if (progress < 90) {
+                progressText.textContent = 'Optimizing Analysis Pipeline...';
+            } else {
+                progressText.textContent = 'Ready to Analyze';
+            }
+            
+            if (progress >= 100) {
+                clearInterval(progressInterval);
+                progressText.textContent = 'System Ready ✓';
+            }
+        }, 400);
+
+        // Enter button
+        const enterBtn = document.getElementById('enterBtn');
+        enterBtn.addEventListener('click', () => {
+            // Fade out animation
+            const container = document.querySelector('.intro-container');
+            container.style.animation = 'fadeOut 0.8s ease-out forwards';
+            
+            setTimeout(() => {
+                // Redirect to main platform
+                window.location.href = '/frontend/neuro_assist.html';
+            }, 800);
+        });
+
+        // Add fade out animation
+        const styleSheet = document.createElement('style');
+        styleSheet.textContent = `
+            @keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+                to {
+                    opacity: 0;
+                    transform: translateY(-20px);
+                }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+
+        // ===== NEURAL NETWORK BACKGROUND ANIMATION =====
+        const neuralCanvas = document.getElementById('neuralNetwork');
+        const neuralCtx = neuralCanvas.getContext('2d');
+
+        neuralCanvas.width = window.innerWidth;
+        neuralCanvas.height = window.innerHeight;
+
+        // Neural network nodes
+        class NeuralNode {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.radius = Math.random() * 2 + 1;
+                this.pulse = Math.random() * Math.PI * 2;
+                this.pulseSpeed = Math.random() * 0.02 + 0.01;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Bounce off walls
+                if (this.x < 0 || this.x > neuralCanvas.width) this.vx *= -1;
+                if (this.y < 0 || this.y > neuralCanvas.height) this.vy *= -1;
+
+                // Keep in bounds
+                this.x = Math.max(0, Math.min(neuralCanvas.width, this.x));
+                this.y = Math.max(0, Math.min(neuralCanvas.height, this.y));
+
+                // Update pulse
+                this.pulse += this.pulseSpeed;
+            }
+
+            draw() {
+                const pulseScale = 1 + Math.sin(this.pulse) * 0.3;
+                const glowIntensity = Math.sin(this.pulse) * 0.5 + 0.5;
+
+                // Glow
+                const gradient = neuralCtx.createRadialGradient(this.x, this.y, 0, this.x, this.y, this.radius * 4);
+                gradient.addColorStop(0, `rgba(76, 175, 80, ${glowIntensity * 0.6})`);
+                gradient.addColorStop(1, `rgba(76, 175, 80, 0)`);
+
+                neuralCtx.fillStyle = gradient;
+                neuralCtx.fillRect(
+                    this.x - this.radius * 4,
+                    this.y - this.radius * 4,
+                    this.radius * 8,
+                    this.radius * 8
+                );
+
+                // Core node
+                neuralCtx.fillStyle = `rgba(129, 199, 132, ${0.8 + glowIntensity * 0.2})`;
+                neuralCtx.beginPath();
+                neuralCtx.arc(this.x, this.y, this.radius * pulseScale, 0, Math.PI * 2);
+                neuralCtx.fill();
+
+                // Bright center
+                neuralCtx.fillStyle = `rgba(255, 255, 255, ${glowIntensity})`;
+                neuralCtx.beginPath();
+                neuralCtx.arc(this.x, this.y, this.radius * 0.5, 0, Math.PI * 2);
+                neuralCtx.fill();
+            }
+        }
+
+        // Create neural network nodes
+        const nodes = [];
+        const nodeCount = 50;
+
+        for (let i = 0; i < nodeCount; i++) {
+            nodes.push(
+                new NeuralNode(
+                    Math.random() * neuralCanvas.width,
+                    Math.random() * neuralCanvas.height
+                )
+            );
+        }
+
+        function drawConnections() {
+            const connectionDistance = 150;
+
+            for (let i = 0; i < nodes.length; i++) {
+                for (let j = i + 1; j < nodes.length; j++) {
+                    const dx = nodes[i].x - nodes[j].x;
+                    const dy = nodes[i].y - nodes[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+
+                    if (distance < connectionDistance) {
+                        const opacity = (1 - distance / connectionDistance) * 0.6;
+                        const lightness = 0.5 + Math.sin(Date.now() * 0.002 + i + j) * 0.5;
+
+                        // Draw connection line
+                        const gradient = neuralCtx.createLinearGradient(
+                            nodes[i].x,
+                            nodes[i].y,
+                            nodes[j].x,
+                            nodes[j].y
+                        );
+                        gradient.addColorStop(0, `rgba(76, 175, 80, ${opacity * lightness})`);
+                        gradient.addColorStop(0.5, `rgba(129, 199, 132, ${opacity * lightness * 1.2})`);
+                        gradient.addColorStop(1, `rgba(56, 142, 60, ${opacity * lightness})`);
+
+                        neuralCtx.strokeStyle = gradient;
+                        neuralCtx.lineWidth = 1;
+                        neuralCtx.lineCap = 'round';
+                        neuralCtx.beginPath();
+                        neuralCtx.moveTo(nodes[i].x, nodes[i].y);
+                        neuralCtx.lineTo(nodes[j].x, nodes[j].y);
+                        neuralCtx.stroke();
+
+                        // Draw energy particles along the line
+                        const energyPos = (Date.now() * 0.0005 + i * 0.1) % 1;
+                        const px = nodes[i].x + (nodes[j].x - nodes[i].x) * energyPos;
+                        const py = nodes[i].y + (nodes[j].y - nodes[i].y) * energyPos;
+
+                        neuralCtx.fillStyle = `rgba(76, 175, 80, ${opacity * 0.8})`;
+                        neuralCtx.beginPath();
+                        neuralCtx.arc(px, py, 1.5, 0, Math.PI * 2);
+                        neuralCtx.fill();
+                    }
+                }
+            }
+        }
+
+        function animateNeuralNetwork() {
+            // Clear canvas with fade effect
+            neuralCtx.fillStyle = 'rgba(15, 23, 42, 0.1)';
+            neuralCtx.fillRect(0, 0, neuralCanvas.width, neuralCanvas.height);
+
+            // Update and draw nodes
+            for (let node of nodes) {
+                node.update();
+                node.draw();
+            }
+
+            // Draw connections
+            drawConnections();
+
+            requestAnimationFrame(animateNeuralNetwork);
+        }
+
+        animateNeuralNetwork();
+
+        // Handle window resize for neural network
+        window.addEventListener('resize', () => {
+            neuralCanvas.width = window.innerWidth;
+            neuralCanvas.height = window.innerHeight;
+        });
+    </script>
+</body>
+</html>

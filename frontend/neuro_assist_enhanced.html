@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuro ASSIST - AI Brain Tumor Detection & Analysis</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            font-size: 32px;
+        }
+
+        .header-info {
+            text-align: right;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            max-height: 600px;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .upload-section {
+            border: 2px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9ff;
+        }
+
+        .upload-section:hover {
+            background: #eef1ff;
+            border-color: #764ba2;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .upload-text {
+            font-size: 16px;
+            color: #667eea;
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+
+        .upload-subtext {
+            font-size: 12px;
+            color: #999;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        .result-container {
+            background: linear-gradient(135deg, #667eea10 0%, #764ba210 100%);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .result-label {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 30px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .severity-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .severity-high {
+            background: #fee;
+            color: #c00;
+            border: 1px solid #fcc;
+        }
+
+        .severity-moderate {
+            background: #fef3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+
+        .severity-low {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .info-item {
+            background: white;
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 3px solid #667eea;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 12px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 8px;
+        }
+
+        .item-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .item-list li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        .item-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .cam-image {
+            width: 100%;
+            border-radius: 8px;
+            margin-top: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .chat-window {
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            gap: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-bubble {
+            max-width: 85%;
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            overflow-wrap: break-word;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+
+        .user-message {
+            align-self: flex-end;
+        }
+
+        .user-message .message-bubble {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .assistant-message {
+            align-self: flex-start;
+        }
+
+        .assistant-message .message-bubble {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .input-area {
+            padding: 15px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            background: white;
+            border-radius: 12px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-area input:focus {
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s;
+            font-size: 13px;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 13px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-secondary:hover {
+            background: #f8f9ff;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            background: #ccc !important;
+        }
+
+        .btn:disabled:hover {
+            background: #ccc !important;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .disclaimer {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 11px;
+            color: #856404;
+            margin-top: 15px;
+            line-height: 1.5;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 12px 16px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #999;
+            font-weight: 600;
+            font-size: 13px;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .full-width-card {
+            grid-column: 1 / -1;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+        }
+
+        .empty-state-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+
+        .medical-summary {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .medical-summary-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .medical-summary-text {
+            font-size: 13px;
+            color: #555;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect } = React;
+
+        function NeuroASSIST() {
+            const [uploadedImage, setUploadedImage] = useState(null);
+            const [prediction, setPrediction] = useState(null);
+            const [loading, setLoading] = useState(false);
+            const [messages, setMessages] = useState([]);
+            const [inputMessage, setInputMessage] = useState('');
+            const [chatLoading, setChatLoading] = useState(false);
+            const [activeTab, setActiveTab] = useState('overview');
+            const fileInputRef = useRef(null);
+            const messagesEndRef = useRef(null);
+
+            const scrollToBottom = () => {
+                messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            useEffect(() => {
+                scrollToBottom();
+            }, [messages]);
+
+            const handleUploadClick = () => {
+                fileInputRef.current?.click();
+            };
+
+            const handleFileChange = async (event) => {
+                const file = event.target.files?.[0];
+                if (!file) return;
+
+                setUploadedImage(file);
+                setLoading(true);
+                setMessages([]);
+                setPrediction(null);
+
+                const formData = new FormData();
+                formData.append('image', file);
+
+                try {
+                    const response = await fetch('/predict', {
+                        method: 'POST',
+                        body: formData,
+                    });
+
+                    if (!response.ok) throw new Error('Prediction failed');
+
+                    const data = await response.json();
+                    setPrediction(data);
+
+                    // Add initial message
+                    const initialMsg = `Prediction: ${data.label} (Confidence: ${(data.confidence * 100).toFixed(1)}%)`;
+                    setMessages([{ role: 'assistant', message: initialMsg }]);
+                } catch (error) {
+                    alert('Error during prediction: ' + error.message);
+                    setMessages([{ role: 'assistant', message: 'Prediction failed. Please try again.' }]);
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            const handleSendMessage = async () => {
+                if (!inputMessage.trim()) return;
+
+                const userMsg = { role: 'user', message: inputMessage };
+                setMessages([...messages, userMsg]);
+                setInputMessage('');
+                setChatLoading(true);
+
+                try {
+                    const response = await fetch('/chat', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ message: inputMessage }),
+                    });
+
+                    const data = await response.json();
+                    const assistantMsg = { role: 'assistant', message: data.reply || 'Unable to process message' };
+                    setMessages(prev => [...prev, assistantMsg]);
+                } catch (error) {
+                    const errorMsg = { role: 'assistant', message: 'Chat service unavailable' };
+                    setMessages(prev => [...prev, errorMsg]);
+                } finally {
+                    setChatLoading(false);
+                }
+            };
+
+            const handleExplainMore = async () => {
+                // Only show comprehensive explanation for valid predictions
+                if (!prediction) {
+                    setMessages(prev => [...prev, { role: 'assistant', message: 'Please upload a valid brain MRI image first to get a comprehensive explanation.' }]);
+                    return;
+                }
+
+                // Check if prediction indicates invalid image
+                if (prediction.label && prediction.label.toLowerCase().startsWith('invalid')) {
+                    setMessages(prev => [...prev, { role: 'assistant', message: 'Cannot provide explanation for invalid image. Please upload a valid brain MRI image.' }]);
+                    return;
+                }
+
+                const explainMsg = "Can you explain more about this condition and my treatment options?";
+                setMessages(prev => [...prev, { role: 'user', message: explainMsg }]);
+                setChatLoading(true);
+
+                try {
+                    const response = await fetch('/explain', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            label: prediction.label,
+                            confidence: prediction.confidence,
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        const error = await response.json();
+                        if (error.error === 'invalid_image') {
+                            setMessages(prev => [...prev, { role: 'assistant', message: '⚠️ The uploaded image is not a valid brain MRI. Please upload a medical brain scan image (grayscale format).' }]);
+                        } else if (error.error === 'no_prediction') {
+                            setMessages(prev => [...prev, { role: 'assistant', message: 'No prediction available. Please upload and analyze an image first.' }]);
+                        } else {
+                            setMessages(prev => [...prev, { role: 'assistant', message: 'Unable to generate explanation. Please try again.' }]);
+                        }
+                    } else {
+                        const data = await response.json();
+                        setMessages(prev => [...prev, { role: 'assistant', message: data.explanation || 'Please consult with a medical professional.' }]);
+                    }
+                } catch (error) {
+                    console.error('Explain error:', error);
+                    setMessages(prev => [...prev, { role: 'assistant', message: '⚠️ Error generating explanation. Please ensure you have uploaded a valid brain MRI image.' }]);
+                } finally {
+                    setChatLoading(false);
+                }
+            };
+
+            return (
+                <div className="container">
+                    <header>
+                        <div className="logo">
+                            <span className="logo-icon">🧠</span>
+                            <span>Neuro ASSIST</span>
+                        </div>
+                        <div className="header-info">
+                            <div>AI-Powered Brain Tumor Detection & Analysis</div>
+                            <div style={{fontSize: '11px', marginTop: '5px', color: '#999'}}>
+                                ⚠️ For educational and informational purposes only
+                            </div>
+                        </div>
+                    </header>
+
+                    <div className="main-content">
+                        {/* LEFT PANEL - UPLOAD AND RESULTS */}
+                        <div>
+                            <div className="card">
+                                <div className="card-title">📤 MRI Image Upload</div>
+
+                                <div
+                                    className="upload-section"
+                                    onClick={handleUploadClick}
+                                    onDragOver={(e) => e.preventDefault()}
+                                    onDrop={(e) => {
+                                        e.preventDefault();
+                                        const file = e.dataTransfer.files?.[0];
+                                        if (file) {
+                                            fileInputRef.current.files = e.dataTransfer.files;
+                                            handleFileChange({ target: { files: e.dataTransfer.files } });
+                                        }
+                                    }}
+                                >
+                                    <div className="upload-icon">📁</div>
+                                    <div className="upload-text">Click or drag brain MRI image</div>
+                                    <div className="upload-subtext">PNG, JPG, or DICOM formats supported</div>
+                                </div>
+
+                                <input
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleFileChange}
+                                />
+
+                                {loading && (
+                                    <div style={{textAlign: 'center', marginTop: '20px'}}>
+                                        <div className="loading"></div>
+                                        <div style={{marginTop: '10px', color: '#999', fontSize: '13px'}}>
+                                            Analyzing image...
+                                        </div>
+                                    </div>
+                                )}
+
+                                {prediction && (
+                                    <div className="result-container">
+                                        <div className="result-label">Tumor Type: {prediction.label}</div>
+
+                                        <div className="confidence-bar">
+                                            <div
+                                                className="confidence-fill"
+                                                style={{width: `${prediction.confidence * 100}%`}}
+                                            >
+                                                {(prediction.confidence * 100).toFixed(1)}%
+                                            </div>
+                                        </div>
+
+                                        {prediction.medical_analysis && (
+                                            <>
+                                                <div style={{marginTop: '15px'}}>
+                                                    <div style={{fontSize: '12px', fontWeight: '600', color: '#666', marginBottom: '5px'}}>
+                                                        TUMOR INFORMATION
+                                                    </div>
+                                                    <div className="severity-badge" style={{
+                                                        background: prediction.medical_analysis.severity_level?.includes('LOW') ? '#d4edda' : 
+                                                                   prediction.medical_analysis.severity_level?.includes('HIGH') ? '#fee' : '#fef3cd',
+                                                        color: prediction.medical_analysis.severity_level?.includes('LOW') ? '#155724' :
+                                                               prediction.medical_analysis.severity_level?.includes('HIGH') ? '#c00' : '#856404',
+                                                        borderColor: prediction.medical_analysis.severity_level?.includes('LOW') ? '#c3e6cb' :
+                                                                    prediction.medical_analysis.severity_level?.includes('HIGH') ? '#fcc' : '#ffeaa7'
+                                                    }}>
+                                                        {prediction.medical_analysis.severity_level}
+                                                    </div>
+
+                                                    <div className="info-grid">
+                                                        <div className="info-item">
+                                                            <div className="info-label">Tumor Percentage</div>
+                                                            <div className="info-value">{prediction.medical_analysis.tumor_percentage}</div>
+                                                        </div>
+                                                        <div className="info-item">
+                                                            <div className="info-label">Growth Rate</div>
+                                                            <div className="info-value">{prediction.medical_analysis.growth_rate}</div>
+                                                        </div>
+                                                        <div className="info-item">
+                                                            <div className="info-label">Prognosis</div>
+                                                            <div className="info-value">{prediction.medical_analysis.prognosis}</div>
+                                                        </div>
+                                                        <div className="info-item">
+                                                            <div className="info-label">Survival Rate</div>
+                                                            <div className="info-value">{prediction.medical_analysis.survival_rate}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="medical-summary">
+                                                    <div className="medical-summary-title">Description</div>
+                                                    <div className="medical-summary-text">
+                                                        {prediction.medical_analysis.description}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+
+                                        {prediction.cam_image && (
+                                            <img
+                                                src={`data:image/png;base64,${prediction.cam_image}`}
+                                                alt="CAM visualization"
+                                                className="cam-image"
+                                            />
+                                        )}
+
+                                        <div className="action-buttons">
+                                            <button 
+                                                className="btn btn-primary" 
+                                                onClick={handleExplainMore}
+                                                disabled={!prediction || (prediction.label && prediction.label.toLowerCase().startsWith('invalid'))}
+                                                title={!prediction ? "Upload a brain MRI image first" : (prediction.label && prediction.label.toLowerCase().startsWith('invalid') ? "Invalid image - cannot explain" : "Click for comprehensive analysis")}
+                                            >
+                                                💡 Explain More
+                                            </button>
+                                            <button className="btn btn-secondary" onClick={handleUploadClick}>
+                                                🔄 New Image
+                                            </button>
+                                        </div>
+
+                                        <div className="disclaimer">
+                                            ⚠️ <strong>Medical Disclaimer:</strong> This analysis is AI-generated for informational purposes only and is NOT a clinical diagnosis. Always consult with qualified medical professionals (radiologists, neurologists, neurosurgeons) for proper diagnosis and treatment planning.
+                                        </div>
+                                    </div>
+                                )}
+
+                                {!prediction && !loading && (
+                                    <div className="empty-state">
+                                        <div className="empty-state-icon">🏥</div>
+                                        <div>Upload a brain MRI image to get started</div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* RIGHT PANEL - CHAT AND ANALYSIS */}
+                        <div>
+                            {prediction ? (
+                                <>
+                                    {/* TABS FOR ANALYSIS */}
+                                    <div style={{marginBottom: '30px'}}>
+                                        <div className="tabs">
+                                            <button className={`tab ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>
+                                                📊 Overview
+                                            </button>
+                                            <button className={`tab ${activeTab === 'sideeffects' ? 'active' : ''}`} onClick={() => setActiveTab('sideeffects')}>
+                                                ⚠️ Side Effects
+                                            </button>
+                                            <button className={`tab ${activeTab === 'lifestyle' ? 'active' : ''}`} onClick={() => setActiveTab('lifestyle')}>
+                                                🏃 Lifestyle
+                                            </button>
+                                        </div>
+
+                                        <div className="card" style={{padding: '20px', maxHeight: '500px', overflowY: 'auto'}}>
+                                            {/* OVERVIEW TAB */}
+                                            {activeTab === 'overview' && prediction.medical_analysis && (
+                                                <div>
+                                                    <div className="section-title">🔬 Treatment Options</div>
+                                                    <ul className="item-list">
+                                                        {prediction.medical_analysis.treatment_options?.map((item, i) => (
+                                                            <li key={i}>{item}</li>
+                                                        ))}
+                                                    </ul>
+
+                                                    <div className="section-title">⚕️ Risk Factors</div>
+                                                    <ul className="item-list">
+                                                        {prediction.medical_analysis.risk_factors?.map((item, i) => (
+                                                            <li key={i}>{item}</li>
+                                                        ))}
+                                                    </ul>
+
+                                                    <div className="section-title">📅 Follow-up Plan</div>
+                                                    <div style={{fontSize: '13px', color: '#555', lineHeight: '1.5'}}>
+                                                        {prediction.medical_analysis.follow_up}
+                                                    </div>
+
+                                                    <div className="section-title">👨‍⚕️ Recommended Specialist</div>
+                                                    <div style={{fontSize: '13px', color: '#667eea', fontWeight: '600'}}>
+                                                        {prediction.medical_analysis.specialist_recommendation}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* SIDE EFFECTS TAB */}
+                                            {activeTab === 'sideeffects' && (
+                                                <div>
+                                                    {prediction.medical_analysis?.side_effects && prediction.medical_analysis.side_effects.length > 0 && (
+                                                        <>
+                                                            <div className="section-title">🚨 Common Side Effects</div>
+                                                            <ul className="item-list">
+                                                                {prediction.medical_analysis.side_effects.map((item, i) => (
+                                                                    <li key={i}>{item}</li>
+                                                                ))}
+                                                            </ul>
+                                                        </>
+                                                    )}
+
+                                                    {prediction.medication_side_effects && Object.keys(prediction.medication_side_effects).length > 0 && (
+                                                        <>
+                                                            <div className="section-title" style={{marginTop: '20px'}}>
+                                                                💊 Treatment Side Effects
+                                                            </div>
+                                                            {Object.entries(prediction.medication_side_effects).map(([treatment, effects]) => (
+                                                                <div key={treatment}>
+                                                                    <div style={{fontSize: '13px', fontWeight: '600', color: '#667eea', marginTop: '12px'}}>
+                                                                        {treatment}
+                                                                    </div>
+                                                                    <ul className="item-list">
+                                                                        {Array.isArray(effects) ? effects.map((e, i) => (
+                                                                            <li key={i}>{e}</li>
+                                                                        )) : (
+                                                                            Object.entries(effects).map(([key, val]) => (
+                                                                                <li key={key}>{val}</li>
+                                                                            ))
+                                                                        )}
+                                                                    </ul>
+                                                                </div>
+                                                            ))}
+                                                        </>
+                                                    )}
+
+                                                    <div className="disclaimer" style={{marginTop: '20px'}}>
+                                                        Side effects vary by individual. Discuss all potential side effects with your treatment team.
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* LIFESTYLE TAB */}
+                                            {activeTab === 'lifestyle' && (
+                                                <div>
+                                                    <div className="section-title">💪 Lifestyle Recommendations</div>
+                                                    <ul className="item-list">
+                                                        {prediction.lifestyle_recommendations?.map((item, i) => (
+                                                            <li key={i}>{item}</li>
+                                                        ))}
+                                                    </ul>
+
+                                                    <div className="disclaimer">
+                                                        These are general recommendations. Always follow specific guidance from your healthcare team.
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+
+                                    {/* CHAT WINDOW */}
+                                    <div className="chat-window">
+                                        <div className="card-title" style={{padding: '20px 20px 0 20px', marginBottom: '10px'}}>
+                                            💬 Medical Assistant Chat
+                                        </div>
+                                        <div className="messages-container">
+                                            {messages.map((msg, i) => (
+                                                <div key={i} className={`message ${msg.role}-message`}>
+                                                    <div className="message-bubble">
+                                                        {msg.message}
+                                                    </div>
+                                                </div>
+                                            ))}
+                                            {chatLoading && (
+                                                <div className="message assistant-message">
+                                                    <div className="message-bubble">
+                                                        <div className="loading"></div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                            <div ref={messagesEndRef} />
+                                        </div>
+
+                                        <div className="input-area">
+                                            <input
+                                                type="text"
+                                                placeholder="Ask a question about your diagnosis..."
+                                                value={inputMessage}
+                                                onChange={(e) => setInputMessage(e.target.value)}
+                                                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                                                disabled={chatLoading}
+                                            />
+                                            <button
+                                                className="send-btn"
+                                                onClick={handleSendMessage}
+                                                disabled={chatLoading || !inputMessage.trim()}
+                                            >
+                                                ➤
+                                            </button>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <div className="card">
+                                    <div className="empty-state">
+                                        <div className="empty-state-icon">📋</div>
+                                        <div>Upload an image to see detailed analysis and chat</div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<NeuroASSIST />);
+    </script>
+</body>
+</html>
