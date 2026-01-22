@@ -1,28 +1,14 @@
-# Ignore backend files for frontend deployment
-fastapi_app.py
-app.py
-chatbot.py
-brain_tumor_knowledge.py
-medical_knowledge.py
-train.py
-evaluate_models.py
-extract_pipeline.py
-test_*.py
-predict_testing.py
-load_model_check.py
+# Ignore backend folder for frontend deployment
+backend/
 *.pyc
 __pycache__/
-*.h5
 .venv
 venv
 Lib/
 Scripts/
-requirements.txt
-Dockerfile
-docker-compose.yml
-.git
-.gitignore
-README.md
 .env
 *.ps1
 *.sh
+.git
+.gitignore
+
