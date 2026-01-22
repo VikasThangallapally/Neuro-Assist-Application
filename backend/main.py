@@ -1968,7 +1968,7 @@ async def predict_batch(include_qa: bool = False):
 
 
 # Mount the frontend static files
-app.mount('/frontend', StaticFiles(directory='frontend'), name='frontend')
+app.mount('/frontend', StaticFiles(directory='../frontend'), name='frontend')
 
 
 if __name__ == '__main__':
