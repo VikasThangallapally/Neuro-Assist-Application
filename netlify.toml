@@ -1,0 +1,20 @@
+[build]
+  # Frontend build (if using a framework) or just serve static files
+  command = ""
+  publish = "frontend"
+
+[[redirects]]
+  # Redirect API calls to backend
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, PUT, DELETE, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+
+# Environment variables will be set in Netlify dashboard
+# REACT_APP_API_URL = your backend URL (e.g., https://your-backend.render.com)

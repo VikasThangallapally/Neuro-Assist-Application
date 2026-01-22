@@ -18,6 +18,7 @@ from fastapi.responses import FileResponse
 from fastapi import Header, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi.middleware.cors import CORSMiddleware
 from PIL import Image
 import numpy as np
 import uuid
@@ -66,6 +67,22 @@ if openai is not None and OPENAI_API_KEY:
     openai.api_key = OPENAI_API_KEY
 
 app = FastAPI()
+
+# Add CORS middleware for Netlify deployment
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:8000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:8000",
+        "https://*.netlify.app",  # Allow all Netlify deployments
+        os.environ.get("FRONTEND_URL", ""),  # Allow custom frontend URL from environment
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 TEMPLATES_DIR = os.path.join(os.path.dirname(__file__), 'frontend')
 templates = Jinja2Templates(directory=TEMPLATES_DIR)

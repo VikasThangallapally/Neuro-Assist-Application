@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: neuro-assist-backend
+    env: python
+    plan: standard
+    pythonVersion: 3.13
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn fastapi_app:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.13"
+      - key: FRONTEND_URL
+        value: "https://neuro-assist.netlify.app"  # Update with your Netlify URL
+    autoDeploy: true
